@@ -1,0 +1,242 @@
+import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { insertContactSubmissionSchema, type InsertContactSubmission } from "@shared/schema";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { MapPin, Phone, Mail, Clock } from "lucide-react";
+
+const contactInfo = [
+  {
+    icon: MapPin,
+    title: "Address",
+    content: "123 Real Estate Boulevard\nSpringfield, ST 12345"
+  },
+  {
+    icon: Phone,
+    title: "Phone",
+    content: "(555) 123-4567"
+  },
+  {
+    icon: Mail,
+    title: "Email",
+    content: "info@centrepointhomes.com"
+  },
+  {
+    icon: Clock,
+    title: "Business Hours",
+    content: "Mon-Fri: 9:00 AM - 6:00 PM\nSat: 9:00 AM - 4:00 PM\nSun: By Appointment"
+  }
+];
+
+export default function ContactSection() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const form = useForm<InsertContactSubmission>({
+    resolver: zodResolver(insertContactSubmissionSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      service: "",
+      message: ""
+    }
+  });
+
+  const contactMutation = useMutation({
+    mutationFn: async (data: InsertContactSubmission) => {
+      const response = await apiRequest("POST", "/api/contact", data);
+      return response.json();
+    },
+    onSuccess: (data) => {
+      toast({
+        title: "Message Sent!",
+        description: data.message,
+      });
+      form.reset();
+      queryClient.invalidateQueries({ queryKey: ["/api/contact-submissions"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to send message. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
+
+  const onSubmit = (data: InsertContactSubmission) => {
+    contactMutation.mutate(data);
+  };
+
+  return (
+    <section id="contact" className="py-16 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Get In Touch</h2>
+          <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
+            Ready to find your dream home or sell your property? Contact us today for a free consultation and let us help you achieve your real estate goals.
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {/* Contact Form */}
+          <div className="bg-neutral-50 rounded-lg p-8">
+            <h3 className="text-2xl font-semibold text-neutral-800 mb-6">Send Us a Message</h3>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>First Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Last Name</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address</FormLabel>
+                      <FormControl>
+                        <Input type="email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input type="tel" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="service"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Service Interest</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a service" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="buying">Property Buying</SelectItem>
+                          <SelectItem value="selling">Property Selling</SelectItem>
+                          <SelectItem value="investment">Investment Consulting</SelectItem>
+                          <SelectItem value="analysis">Market Analysis</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="message"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Message</FormLabel>
+                      <FormControl>
+                        <Textarea 
+                          {...field} 
+                          rows={6}
+                          placeholder="Tell us about your real estate needs..."
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <Button 
+                  type="submit" 
+                  className="w-full bg-primary text-white hover:bg-blue-700 transition-colors font-medium text-lg py-3"
+                  disabled={contactMutation.isPending}
+                >
+                  {contactMutation.isPending ? "Sending..." : "Send Message"}
+                </Button>
+              </form>
+            </Form>
+          </div>
+
+          {/* Contact Information */}
+          <div className="space-y-8">
+            <div>
+              <h3 className="text-2xl font-semibold text-neutral-800 mb-6">Contact Information</h3>
+              <div className="space-y-6">
+                {contactInfo.map((info, index) => {
+                  const IconComponent = info.icon;
+                  return (
+                    <div key={index} className="flex items-start">
+                      <div className="flex-shrink-0 w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center">
+                        <IconComponent className="w-6 h-6" />
+                      </div>
+                      <div className="ml-4">
+                        <h4 className="text-lg font-semibold text-neutral-800">{info.title}</h4>
+                        <p className="text-neutral-600 whitespace-pre-line">{info.content}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* Map Placeholder */}
+            <div className="bg-neutral-200 rounded-lg h-64 flex items-center justify-center">
+              <div className="text-center">
+                <MapPin className="w-16 h-16 text-neutral-400 mx-auto mb-4" />
+                <p className="text-neutral-600">Interactive Map</p>
+                <p className="text-sm text-neutral-500">Map integration placeholder</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
