@@ -225,15 +225,6 @@ export default function ContactSection() {
                 })}
               </div>
             </div>
-            
-            {/* Map Placeholder */}
-            <div className="bg-neutral-200 rounded-lg h-64 flex items-center justify-center">
-              <div className="text-center">
-                <MapPin className="w-16 h-16 text-neutral-400 mx-auto mb-4" />
-                <p className="text-neutral-600">Interactive Map</p>
-                <p className="text-sm text-neutral-500">Map integration placeholder</p>
-              </div>
-            </div>
           </div>
         </div>
       </div>
