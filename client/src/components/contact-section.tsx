@@ -16,12 +16,12 @@ const contactInfo = [
   {
     icon: MapPin,
     title: "Address",
-    content: "123 Real Estate Boulevard\nSpringfield, ST 12345"
+    content: "Koregaon Park, Pune\nMaharashtra, India 411001"
   },
   {
     icon: Phone,
     title: "Phone",
-    content: "(555) 123-4567"
+    content: "+91 98765 43210"
   },
   {
     icon: Mail,
@@ -78,7 +78,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-16 bg-white">
+    <section id="contact" className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Get In Touch</h2>
@@ -89,7 +89,7 @@ export default function ContactSection() {
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Contact Form */}
-          <div className="bg-neutral-50 rounded-lg p-8">
+          <div className="bg-white/20 backdrop-blur-sm rounded-lg p-8 border border-white/30">
             <h3 className="text-2xl font-semibold text-neutral-800 mb-6">Send Us a Message</h3>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

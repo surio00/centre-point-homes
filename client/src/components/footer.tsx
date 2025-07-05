@@ -18,11 +18,11 @@ const quickLinks = [
 const contactInfo = [
   {
     icon: MapPin,
-    content: "123 Real Estate Blvd, Springfield, ST 12345"
+    content: "Koregaon Park, Pune, Maharashtra, India 411001"
   },
   {
     icon: Phone,
-    content: "(555) 123-4567"
+    content: "+91 98765 43210"
   },
   {
     icon: Mail,
@@ -45,7 +45,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <h3 className="text-2xl font-bold mb-4">Centre Point Homes</h3>
             <p className="text-neutral-300 mb-6 max-w-md">
-              Your trusted partner in real estate excellence. We're committed to helping you find your perfect home and achieve your property goals.
+              Your trusted partner in real estate excellence in Pune and Maharashtra. We're committed to helping you find your perfect home and achieve your property goals.
             </p>
             <div className="flex space-x-4">
               {socialLinks.map((social, index) => {

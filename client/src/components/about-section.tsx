@@ -7,7 +7,7 @@ export default function AboutSection() {
   ];
 
   return (
-    <section id="about" className="py-16 bg-neutral-50">
+    <section id="about" className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div>
@@ -15,7 +15,7 @@ export default function AboutSection() {
               About Centre Point Homes
             </h2>
             <p className="text-lg text-neutral-600 mb-6">
-              With over 15 years of experience in the real estate industry, Centre Point Homes has established itself as a trusted partner for buyers and sellers throughout the region. Our commitment to excellence and personalized service has helped hundreds of families find their dream homes.
+              With over 15 years of experience in the real estate industry, Centre Point Homes has established itself as a trusted partner for buyers and sellers throughout Pune and Maharashtra. Our commitment to excellence and personalized service has helped hundreds of families find their dream homes.
             </p>
             <p className="text-lg text-neutral-600 mb-8">
               We understand that buying or selling a home is one of life's most significant decisions. That's why we provide comprehensive support throughout the entire process, ensuring our clients feel confident and informed every step of the way.

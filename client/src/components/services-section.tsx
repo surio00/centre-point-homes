@@ -35,7 +35,7 @@ const services = [
 
 export default function ServicesSection() {
   return (
-    <section id="services" className="py-16 bg-white">
+    <section id="services" className="py-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-neutral-800 mb-4">Our Services</h2>
@@ -48,7 +48,7 @@ export default function ServicesSection() {
           {services.map((service, index) => {
             const IconComponent = service.icon;
             return (
-              <div key={index} className="bg-neutral-50 rounded-lg p-8 text-center hover:shadow-lg transition-shadow duration-300">
+              <div key={index} className="bg-white/20 backdrop-blur-sm rounded-lg p-8 text-center hover:shadow-lg transition-shadow duration-300 border border-white/30">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-primary text-white rounded-full mb-6">
                   <IconComponent className="w-8 h-8" />
                 </div>

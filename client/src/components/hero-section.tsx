@@ -23,25 +23,9 @@ export default function HeroSection() {
           <h1 className="text-4xl md:text-6xl font-bold mb-6">
             Find Your Perfect Home
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-neutral-200 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl text-neutral-200 max-w-3xl mx-auto">
             Discover exceptional properties with Centre Point Homes - your trusted partner in real estate excellence.
           </p>
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              onClick={handleContact}
-              className="bg-primary text-white hover:bg-blue-700 transition-colors font-medium text-lg px-8 py-3"
-            >
-              Get Started Today
-            </Button>
-            <Button 
-              onClick={() => document.querySelector("#properties")?.scrollIntoView({ behavior: 'smooth' })}
-              variant="outline"
-              className="border-white text-white hover:bg-white hover:text-neutral-800 transition-colors font-medium text-lg px-8 py-3"
-            >
-              View Properties
-            </Button>
-          </div>
         </div>
       </div>
     </section>
