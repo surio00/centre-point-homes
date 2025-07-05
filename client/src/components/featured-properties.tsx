@@ -96,9 +96,11 @@ export default function FeaturedProperties() {
                 </div>
               </div>
               <CardContent className="p-6">
-                <div className="flex justify-between items-start mb-3">
-                  <h3 className="text-xl font-semibold text-neutral-800">{property.title}</h3>
-                  <span className="text-2xl font-bold text-primary">{property.price}</span>
+                <div className="mb-3">
+                  <div className="flex justify-between items-start gap-3">
+                    <h3 className="text-xl font-semibold text-neutral-800 flex-1 leading-tight">{property.title}</h3>
+                    <span className="text-2xl font-bold text-primary flex-shrink-0">{property.price}</span>
+                  </div>
                 </div>
                 <p className="text-neutral-600 mb-4">{property.address}</p>
                 <div className="flex items-center space-x-4 mb-4 text-sm text-neutral-500">

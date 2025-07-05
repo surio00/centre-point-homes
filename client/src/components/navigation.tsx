@@ -24,14 +24,14 @@ export default function Navigation() {
     <nav className="bg-white/20 backdrop-blur-md shadow-lg sticky top-0 z-50 border-b border-white/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          <div className="flex items-center">
-            <div className="flex-shrink-0 flex items-center space-x-4">
+          <div className="flex items-center flex-1 min-w-0">
+            <div className="flex-shrink-0 flex items-center space-x-3 md:space-x-4">
               <img 
                 src="/assets/logo.jpeg" 
                 alt="Centre Point Homes Logo" 
-                className="h-14 w-14 object-contain"
+                className="h-12 w-12 md:h-14 md:w-14 object-contain"
               />
-              <span className="text-3xl font-bold text-primary">Centre Point Homes</span>
+              <span className="text-xl md:text-3xl font-bold text-primary truncate">Centre Point Homes</span>
             </div>
           </div>
           

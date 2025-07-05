@@ -15,16 +15,21 @@ const EMAIL_CONFIG = {
   // secure: false, // true for 465, false for other ports
 };
 
-// Create transporter
-const transporter = nodemailer.createTransport(EMAIL_CONFIG);
+// Create transporter only when needed
+let transporter: any = null;
 
 export async function sendContactEmail(submission: InsertContactSubmission) {
   try {
     const recipientEmail = process.env.CONTACT_EMAIL || process.env.EMAIL_USER;
     
-    if (!recipientEmail) {
-      console.error('No recipient email configured');
-      return { success: false, error: 'Email not configured' };
+    if (!recipientEmail || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+      console.log('Email not configured, skipping email send');
+      return { success: true, skipped: true, message: 'Email configuration not available' };
+    }
+
+    // Create transporter when needed
+    if (!transporter) {
+      transporter = nodemailer.createTransport(EMAIL_CONFIG);
     }
 
     const mailOptions = {

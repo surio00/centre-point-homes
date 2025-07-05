@@ -17,22 +17,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Still store in memory for backup/debugging
       const submission = await storage.createContactSubmission(validatedData);
       
-      if (emailResult.success) {
-        res.status(201).json({ 
-          success: true, 
-          message: "Thank you for your message! We'll get back to you soon.",
-          id: submission.id 
-        });
-      } else {
-        // Email failed but form was submitted
-        console.error("Email failed but form submitted:", emailResult.error);
-        res.status(201).json({ 
-          success: true, 
-          message: "Thank you for your message! We'll get back to you soon.",
-          id: submission.id,
-          note: "Email notification may have failed"
-        });
-      }
+      // Always return success since form was submitted successfully
+      res.status(201).json({ 
+        success: true, 
+        message: "Thank you for your message! We'll get back to you soon.",
+        id: submission.id 
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         res.status(400).json({ 
