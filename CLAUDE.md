@@ -1,128 +1,174 @@
-# CLAUDE.md
+# Claude Development Notes - Centre Point Homes
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Project Overview
+Centre Point Homes is a modern real estate website built as a **static site** using React, TypeScript, and Vite. The project has been simplified from a full-stack application to a clean, fast static site with third-party services for contact forms.
 
-## Development Commands
+## Quick Commands
 
-- `npm run dev` - Start development server on port 3000 (runs both client and server)
-- `npm run build` - Build for production (builds client and server)
-- `npm run start` - Start production server on port 5000
-- `npm run check` - Run TypeScript type checking
-- `npm run db:push` - Push database schema changes using Drizzle
-
-## Server Management
-
-**Starting the server:**
+### Development
 ```bash
-npm run dev
+npm run dev        # Start development server (localhost:5173)
+npm run build      # Build for production 
+npm run preview    # Preview production build
+npm run check      # TypeScript type checking
 ```
 
-**Stopping the server properly:**
-- Use `Ctrl + C` in the terminal where the server is running
+### Project Status
+- ✅ **Static Site** - No server/database required
+- ✅ **Contact Form** - Uses Formspree for email notifications
+- ✅ **Video Integration** - Google Drive videos for property tours
+- ✅ **India Localized** - INR pricing, Pune addresses
+- ✅ **Mobile Responsive** - Works on all devices
+- ✅ **Clean Build** - Removed 60+ unused files and dependencies
 
-**If port 3000 is already in use:**
-```bash
-# Check what's using port 3000:
-lsof -i :3000
+## Architecture
 
-# Kill the process (replace PID with actual number):
-kill -9 <PID>
+### Current Stack
+- **Frontend**: React + TypeScript + Vite
+- **Styling**: Tailwind CSS + shadcn/ui components
+- **Forms**: Formspree (email notifications)
+- **Deployment**: Static hosting (Vercel)
+- **Routing**: Wouter (client-side only)
 
-# Or kill all tsx server processes:
-pkill -f "tsx server/index.ts"
-```
+### Key Components
+- `hero-section.tsx` - Main landing section
+- `featured-properties.tsx` - Property listings with videos
+- `contact-section.tsx` - Contact form with Formspree integration
+- `navigation.tsx` - Header with logo and menu
+- `services-section.tsx` - Real estate services
+- `about-section.tsx` - Company information
+- `testimonials-section.tsx` - Customer reviews
+- `footer.tsx` - Footer with contact info
 
-## Architecture Overview
+## Contact Form Configuration
 
-This is a full-stack real estate website built with:
+The contact form uses Formspree (free service) for email notifications:
 
-**Frontend (client/)**
-- React with TypeScript
-- Vite for build tooling
-- TanStack Query for data fetching
-- Wouter for routing
-- Tailwind CSS with shadcn/ui components
-- Component-based architecture with sections: hero, featured properties, about, services, testimonials, contact
+### Current Setup
+- **Form ID**: `xdkzvgya` (already configured)
+- **Service**: https://formspree.io/f/xdkzvgya
+- **Features**: Email notifications, form validation, spam protection
 
-**Backend (server/)**
-- Express.js server with TypeScript
-- Database: PostgreSQL with Drizzle ORM (with in-memory fallback for development)
-- API routes for contact form submissions
-- Development: Vite dev server integration on port 3000
-- Production: Static file serving on port 5000
+### Form Fields
+- First Name (required)
+- Last Name (required) 
+- Email (required, validated)
+- Phone (optional)
+- Service Interest (required dropdown)
+- Message (required, min 10 chars)
 
-**Shared (shared/)**
-- Database schemas with Drizzle and Zod validation
-- Type definitions shared between client and server
+## Property Management
 
-**Key Technical Details:**
-- Monorepo structure with client/server/shared directories
-- Path aliases: `@` for client/src, `@shared` for shared directory
-- Single port (5000) serves both API and client in all environments
-- Database migrations in `./migrations` directory
-- Contact form data stored in `contact_submissions` table
-- User authentication schema exists but may not be fully implemented
+Properties are defined in `featured-properties.tsx`:
 
-**Component Structure:**
-- Main app uses single-page layout with sectioned components
-- UI components follow shadcn/ui patterns in `client/src/components/ui/`
-- Custom hooks in `client/src/hooks/`
-- Utility functions in `client/src/lib/`
-
-## Content Editing Guide
-
-### 1. Adding/Removing Properties
-**File:** `client/src/components/featured-properties.tsx`
-**Edit the `properties` array (lines 5-36):**
 ```javascript
 const properties = [
   {
     id: 1,
-    title: "Your Property Title",
-    price: "$650,000",
-    address: "123 Your Street, Your City",
+    title: "Luxury Family Home",
+    price: "₹5,20,00,000",
+    address: "Koregaon Park, Pune, Maharashtra", 
     bedrooms: 4,
     bathrooms: 3,
     sqft: 2400,
-    image: "https://your-image-url.com/photo.jpg"
-  },
-  // Add more properties here
+    image: "https://images.unsplash.com/...",
+    videoId: "GOOGLE_DRIVE_FILE_ID" // Optional
+  }
 ];
 ```
 
-### 2. Contact Form Data
-**Where submissions are stored:** In-memory storage (resets when server restarts)
-**To view submissions:** Visit `http://localhost:3000/api/contact-submissions`
-**Data includes:** firstName, lastName, email, phone, service, message, createdAt
+### Adding New Properties
+1. Add new property object to the `properties` array
+2. Include all required fields
+3. Optionally add `videoId` for Google Drive video tours
+4. Use high-quality images from Unsplash or property photos
 
-**For persistent storage:** Update `server/storage.ts` to use a real database
+## Video Integration
 
-### 3. Editing Text Content
-**Navigation:** `client/src/components/navigation.tsx`
-**Hero Section:** `client/src/components/hero-section.tsx`
-**About Section:** `client/src/components/about-section.tsx`
-**Services:** `client/src/components/services-section.tsx`
-**Testimonials:** `client/src/components/testimonials-section.tsx`
-**Contact:** `client/src/components/contact-section.tsx`
-**Footer:** `client/src/components/footer.tsx`
+Properties can include Google Drive video tours:
 
-### 4. Changing Images
-**Logo:** Replace `client/public/assets/logo.jpeg`
-**Hero Background:** Edit line 16 in `client/src/components/hero-section.tsx`
-**Property Images:** Change `image` URLs in the properties array
-**Other Images:** Use Unsplash URLs or place in `client/public/assets/`
+### Setup Process
+1. Upload video to Google Drive
+2. Set sharing to "Anyone with the link can view"
+3. Extract file ID from Google Drive URL
+4. Add `videoId` to property configuration
 
-### 5. Statistics and Numbers
-**About Section Stats:** Edit lines 2-7 in `client/src/components/about-section.tsx`
-```javascript
-const stats = [
-  { value: "500+", label: "Properties Sold" },
-  { value: "450+", label: "Happy Clients" },
-  // Update these values
-];
-```
+### Video Dialog
+- Clicking property card opens video dialog
+- Uses Google Drive embed with responsive iframe
+- Fallback to image if no video provided
 
-### 6. Company Information
-**Page Title:** `client/index.html` line 6
-**Company Name:** Multiple files use "Centre Point Homes" - search and replace
-**Meta Descriptions:** `client/index.html` lines 7-9
+## Deployment
+
+### Current Setup
+- **Platform**: Vercel (connected to GitHub)
+- **Build Command**: `npm run build`
+- **Output Directory**: `dist`
+- **Framework**: Vite (auto-detected)
+
+### Deployment Process
+1. Push changes to GitHub main branch
+2. Vercel automatically builds and deploys
+3. Live site updates within 1-2 minutes
+
+## Contact Information
+
+Current contact details (update as needed):
+- **Address**: Koregaon Park, Pune, Maharashtra, India 411001
+- **Phone**: +91 98765 43210
+- **Email**: info@centrepointhomes.com
+- **Hours**: Mon-Fri 9AM-6PM, Sat 9AM-4PM, Sun by appointment
+
+## Development Notes
+
+### Recently Cleaned Up
+- ✅ Removed entire `/server` directory (Express.js backend)
+- ✅ Removed `/api` directory (serverless functions)
+- ✅ Removed database configuration (Drizzle ORM)
+- ✅ Removed authentication code (Passport.js)
+- ✅ Removed 28 unused shadcn/ui components
+- ✅ Removed 25+ unused npm dependencies
+- ✅ Removed Replit configuration files
+- ✅ Simplified to static site architecture
+
+### Bundle Size Optimization
+- Reduced from 466KB to 399KB (67KB smaller)
+- Removed React Query (server state management)
+- Removed unused Radix UI components
+- Clean, minimal dependency tree
+
+### Performance
+- ✅ Fast development server startup
+- ✅ Quick builds (< 2 seconds)
+- ✅ Small bundle size
+- ✅ Static site performance benefits
+
+## Troubleshooting
+
+### Common Issues
+1. **Port 5173 in use**: Kill process with `lsof -i :5173` then `kill -9 <PID>`
+2. **Build fails**: Run `npm run check` to see TypeScript errors
+3. **Contact form not working**: Verify Formspree form ID is correct
+4. **Videos not loading**: Check Google Drive sharing permissions
+
+### Development Tips
+- Use `npm run dev` for hot reloading during development
+- Run `npm run build` before deploying to test production build
+- Check browser console for any JavaScript errors
+- Test contact form thoroughly after any changes
+
+## Future Enhancements
+
+Potential improvements (if needed):
+- Add property search/filter functionality
+- Integrate with a headless CMS for dynamic content
+- Add property detail pages with URL routing
+- Implement image gallery for properties
+- Add blog/news section
+- Integrate with property management APIs
+
+## Security Notes
+- Static site deployment eliminates server vulnerabilities
+- No database means no SQL injection risks
+- Formspree handles form security and spam protection
+- All secrets/keys are handled by third-party services

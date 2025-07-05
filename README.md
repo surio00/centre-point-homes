@@ -1,14 +1,15 @@
 # Centre Point Homes Website
 
-A modern, responsive real estate website built with React, TypeScript, and Express.js.
+A modern, responsive real estate website built with React, TypeScript, and Vite - deployed as a static site.
 
 ## Features
 
-- 🏠 **Property Listings** - Showcase featured properties with detailed information
+- 🏠 **Property Listings** - Showcase featured properties with detailed information and video tours
 - 📱 **Responsive Design** - Works perfectly on desktop, tablet, and mobile
-- 📧 **Contact Form** - Integrated contact form for client inquiries
-- 🎨 **Modern UI** - Clean design with Tailwind CSS and shadcn/ui components
-- ⚡ **Fast Performance** - Built with Vite for optimal loading speeds
+- 📧 **Contact Form** - Integrated contact form with email notifications via Formspree
+- 🎨 **Modern UI** - Clean design with Tailwind CSS and shadcn/ui components  
+- ⚡ **Fast Performance** - Static site deployment for optimal loading speeds
+- 🇮🇳 **India Localized** - Prices in INR, Pune addresses, Indian phone numbers
 
 ## Quick Start
 
@@ -34,28 +35,31 @@ A modern, responsive real estate website built with React, TypeScript, and Expre
    ```
 
 4. **Open your browser**
-   - Visit: `http://localhost:3000`
+   - Visit: `http://localhost:5173`
 
 ### Stopping the Server
-- Press `Ctrl + C` in the terminal to stop the server properly
+- Press `Ctrl + C` in the terminal to stop the server
 
 ## Project Structure
 
 ```
 CentrePointHomes/
-├── client/                 # Frontend React app
+├── client/                 # React application
 │   ├── public/            # Static assets
 │   │   └── assets/        # Images, logos
 │   └── src/
 │       ├── components/    # React components
+│       │   ├── ui/       # shadcn/ui components
+│       │   ├── hero-section.tsx
+│       │   ├── featured-properties.tsx
+│       │   ├── contact-section.tsx
+│       │   └── ...
 │       ├── pages/         # Page components
 │       └── lib/           # Utilities
-├── server/                # Backend Express server
-│   ├── index.ts          # Server entry point
-│   ├── routes.ts         # API routes
-│   └── storage.ts        # Data storage
-├── shared/               # Shared types and schemas
-└── package.json         # Dependencies and scripts
+├── dist/                  # Built static site
+├── package.json          # Dependencies and scripts
+├── vite.config.ts        # Vite configuration
+└── vercel.json           # Deployment configuration
 ```
 
 ## Customization
@@ -67,114 +71,113 @@ const properties = [
   {
     id: 1,
     title: "Your Property Title",
-    price: "$650,000",
-    address: "123 Your Street, Your City",
+    price: "₹5,20,00,000",
+    address: "Your Address, Pune, Maharashtra",
     bedrooms: 4,
     bathrooms: 3,
     sqft: 2400,
-    image: "https://your-image-url.com/photo.jpg"
+    image: "https://your-image-url.com/photo.jpg",
+    videoId: "YOUR_GOOGLE_DRIVE_VIDEO_ID" // Optional
   }
 ];
 ```
 
 ### Changing Content
 - **Hero Section**: `client/src/components/hero-section.tsx`
-- **About Section**: `client/src/components/about-section.tsx`
+- **About Section**: `client/src/components/about-section.tsx`  
 - **Services**: `client/src/components/services-section.tsx`
 - **Contact Info**: `client/src/components/contact-section.tsx`
 
 ### Updating Images
 - **Logo**: Replace `client/public/assets/logo.jpeg`
-- **Hero Background**: Edit the `backgroundImage` URL in `hero-section.tsx`
 - **Property Images**: Update image URLs in the properties array
 
-### Contact Form Data
-- **Email Notifications**: Contact form submissions are sent to your email
-- **Backup Storage**: Also stored in memory at `http://localhost:3000/api/contact-submissions`
-- **Setup Required**: Configure email settings (see Email Setup section below)
+## Contact Form Setup
 
-## Email Setup
+The contact form uses **Formspree** for email notifications:
 
-To receive contact form submissions via email:
+1. **Create Formspree Account**:
+   - Go to [https://formspree.io/](https://formspree.io/)
+   - Sign up with your email address
+   - Create a new form
 
-### Option 1: Gmail (Recommended)
-1. **Create environment file**:
-   ```bash
-   cp .env.example .env
+2. **Update Form ID**:
+   - Copy your Formspree form ID
+   - Update `client/src/components/contact-section.tsx`:
+   ```javascript
+   const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
    ```
 
-2. **Configure Gmail**:
-   - Enable 2-factor authentication on your Gmail account
-   - Generate an App Password: [Google Account Settings > Security > App Passwords](https://myaccount.google.com/apppasswords)
-   - Edit `.env` file:
-     ```env
-     EMAIL_USER=your-email@gmail.com
-     EMAIL_PASS=your-16-character-app-password
-     CONTACT_EMAIL=your-email@gmail.com
-     ```
+3. **Test Contact Form**:
+   - Submit a test message through your website
+   - You should receive an email notification
 
-### Option 2: Other Email Providers
-Edit `.env` file with your SMTP settings:
-```env
-SMTP_HOST=smtp.your-provider.com
-SMTP_PORT=587
-EMAIL_USER=your-email@your-domain.com
-EMAIL_PASS=your-password
-CONTACT_EMAIL=your-email@your-domain.com
-```
+## Video Integration
 
-### Test Email Setup
-After configuration, restart your server and submit a test contact form.
+Properties can include Google Drive video tours:
+
+1. **Upload video to Google Drive**
+2. **Make video publicly viewable**
+3. **Copy the file ID from the Google Drive URL**
+4. **Add videoId to property in featured-properties.tsx**
 
 ## Available Scripts
 
-- `npm run dev` - Start development server (port 3000)
-- `npm run build` - Build for production
-- `npm run start` - Start production server (port 5000)
+- `npm run dev` - Start development server (localhost:5173)
+- `npm run build` - Build for production (outputs to `dist/`)
+- `npm run preview` - Preview production build locally
 - `npm run check` - Run TypeScript type checking
 
 ## Deployment
+
+This is a **static site** that can be deployed to any static hosting provider:
+
+### Vercel (Recommended)
+1. Push your code to GitHub
+2. Connect GitHub repo to Vercel
+3. Deploy automatically - Vercel will detect Vite configuration
+
+### Other Options
+- **Netlify**: Drag and drop the `dist/` folder after running `npm run build`
+- **GitHub Pages**: Use the `dist/` folder as deployment source
+- **Any Static Host**: Upload contents of `dist/` folder
 
 ### Build for Production
 ```bash
 npm run build
 ```
+The built site will be in the `dist/` directory.
 
-### Start Production Server
-```bash
-npm run start
-```
+## Technology Stack
 
-The production server runs on port 5000 and serves both the API and static files.
+- **Frontend**: React, TypeScript, Tailwind CSS, shadcn/ui
+- **Build Tool**: Vite
+- **Deployment**: Static site hosting (Vercel, Netlify, etc.)
+- **Forms**: Formspree for email notifications
+- **Routing**: Wouter (client-side only)
 
 ## Troubleshooting
 
 ### Port Already in Use
 If you get "EADDRINUSE" error:
 ```bash
-# Check what's using the port
-lsof -i :3000
+# Check what's using the port  
+lsof -i :5173
 
 # Kill the process
 kill -9 <PID>
-
-# Or kill all server processes
-pkill -f "tsx server/index.ts"
 ```
 
-### Server Won't Start
+### Development Server Won't Start
 1. Make sure Node.js is installed (`node --version`)
 2. Install dependencies (`npm install`)
-3. Check if port 3000 is available
+3. Check if port 5173 is available
 4. Use `Ctrl + C` to stop the server properly
 
-## Technology Stack
-
-- **Frontend**: React, TypeScript, Tailwind CSS, shadcn/ui
-- **Backend**: Express.js, Node.js
-- **Build Tool**: Vite
-- **Database**: In-memory storage (can be upgraded to PostgreSQL)
-- **Routing**: Wouter (client-side), Express (server-side)
+### Contact Form Not Working
+1. Verify Formspree form ID is correct
+2. Check Formspree dashboard for submissions
+3. Ensure form is not in test mode
 
 ## License
 
@@ -182,4 +185,4 @@ This project is licensed under the MIT License.
 
 ## Support
 
-For issues or questions, please check the troubleshooting section or contact your developer.
+For issues or questions, please check the troubleshooting section above.
