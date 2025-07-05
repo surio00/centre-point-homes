@@ -1,5 +1,5 @@
-// Simple contact form handler for Vercel
-export default function handler(req, res) {
+// Contact form handler with email notifications
+export default async function handler(req, res) {
   // Set CORS headers
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -31,6 +31,16 @@ export default function handler(req, res) {
         });
       }
 
+      // Send email notification
+      await sendEmailNotification({
+        firstName,
+        lastName,
+        email,
+        phone: phone || 'Not provided',
+        service,
+        message
+      });
+
       // Log the submission
       console.log('✅ Contact form success:', {
         name: `${firstName} ${lastName}`,
@@ -43,7 +53,7 @@ export default function handler(req, res) {
       return res.status(201).json({
         success: true,
         message: "Thank you for your message! We'll get back to you soon.",
-        id: Date.now() // Simple ID based on timestamp
+        id: Date.now()
       });
 
     } catch (error) {
@@ -60,4 +70,35 @@ export default function handler(req, res) {
     success: false, 
     message: 'Method not allowed' 
   });
+}
+
+// Function to send email notification
+async function sendEmailNotification(data) {
+  try {
+    // Use a free email service (Formspree)
+    const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: `${data.firstName} ${data.lastName}`,
+        email: data.email,
+        phone: data.phone,
+        service: data.service,
+        message: data.message,
+        _subject: `New Contact from Centre Point Homes - ${data.service}`,
+        _replyto: data.email,
+        _format: 'html'
+      })
+    });
+
+    if (response.ok) {
+      console.log('✅ Email notification sent successfully');
+    } else {
+      console.error('❌ Email notification failed:', response.status);
+    }
+  } catch (error) {
+    console.error('❌ Email notification error:', error);
+  }
 }
