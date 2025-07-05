@@ -1,9 +1,7 @@
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { insertContactSubmissionSchema, type InsertContactSubmission } from "@shared/schema";
-import { apiRequest } from "@/lib/queryClient";
+import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,6 +9,17 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
+
+const contactFormSchema = z.object({
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Please enter a valid email address"),
+  phone: z.string().optional(),
+  service: z.string().min(1, "Please select a service"),
+  message: z.string().min(10, "Message must be at least 10 characters long"),
+});
+
+type ContactFormData = z.infer<typeof contactFormSchema>;
 
 const contactInfo = [
   {
@@ -37,10 +46,10 @@ const contactInfo = [
 
 export default function ContactSection() {
   const { toast } = useToast();
-  const queryClient = useQueryClient();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<InsertContactSubmission>({
-    resolver: zodResolver(insertContactSubmissionSchema),
+  const form = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -51,30 +60,44 @@ export default function ContactSection() {
     }
   });
 
-  const contactMutation = useMutation({
-    mutationFn: async (data: InsertContactSubmission) => {
-      const response = await apiRequest("POST", "/api/contact", data);
-      return response.json();
-    },
-    onSuccess: (data) => {
-      toast({
-        title: "Message Sent!",
-        description: data.message,
+  const onSubmit = async (data: ContactFormData) => {
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('https://formspree.io/f/YOUR_FORM_ID', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: `${data.firstName} ${data.lastName}`,
+          email: data.email,
+          phone: data.phone || 'Not provided',
+          service: data.service,
+          message: data.message,
+          _subject: `New Contact from Centre Point Homes - ${data.service}`,
+          _replyto: data.email,
+        }),
       });
-      form.reset();
-      queryClient.invalidateQueries({ queryKey: ["/api/contact-submissions"] });
-    },
-    onError: (error: any) => {
+
+      if (response.ok) {
+        toast({
+          title: "Message Sent!",
+          description: "Thank you for your message! We'll get back to you soon.",
+        });
+        form.reset();
+      } else {
+        throw new Error('Failed to send message');
+      }
+    } catch (error) {
       toast({
         title: "Error",
-        description: error.message || "Failed to send message. Please try again.",
+        description: "Failed to send message. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
-  });
-
-  const onSubmit = (data: InsertContactSubmission) => {
-    contactMutation.mutate(data);
   };
 
   return (
@@ -196,9 +219,9 @@ export default function ContactSection() {
                 <Button 
                   type="submit" 
                   className="w-full bg-primary text-white hover:bg-blue-700 transition-colors font-medium text-lg py-3"
-                  disabled={contactMutation.isPending}
+                  disabled={isSubmitting}
                 >
-                  {contactMutation.isPending ? "Sending..." : "Send Message"}
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </Form>
