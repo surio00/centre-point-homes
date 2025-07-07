@@ -98,7 +98,7 @@ export default function Footer() {
         
         <div className="border-t border-neutral-700 mt-8 pt-8 text-center">
           <p className="text-neutral-400">
-            © 2024 Centre Point Homes. All rights reserved. | 
+            © 2025 Centre Point Homes. All rights reserved. | 
             <a href="#" className="hover:text-white transition-colors ml-1">Privacy Policy</a> | 
             <a href="#" className="hover:text-white transition-colors ml-1">Terms of Service</a>
           </p>
